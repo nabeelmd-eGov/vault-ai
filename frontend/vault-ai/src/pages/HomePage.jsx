@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { documentsApi } from "../services/fetchDocuments";
 import { Sidebar, UploadZone, DocumentViewer } from "../components";
 
-export default function HomePage() {
+export default function HomePage({ isSidebarOpen, onCloseSidebar }) {
   const [documents, setDocuments] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [selectedDoc, setSelectedDoc] = useState(null);
@@ -84,13 +84,20 @@ export default function HomePage() {
     }
   };
 
+  const handleSelect = (id) => {
+    setSelectedId(id);
+    onCloseSidebar();
+  };
+
   return (
     <div className="app-body">
       <Sidebar
         documents={documents}
         selectedId={selectedId}
-        onSelect={setSelectedId}
+        onSelect={handleSelect}
         onDelete={handleDelete}
+        isOpen={isSidebarOpen}
+        onClose={onCloseSidebar}
       />
 
       <main className="main-content" id="main-content" role="main" aria-label="Document content area">

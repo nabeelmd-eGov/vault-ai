@@ -80,3 +80,55 @@
   margin-top: 20px;
   text-align: center;
 }
+
+/* Mobile menu toggle button */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  cursor: pointer;
+  padding: 8px;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0 12px;
+    justify-content: space-between;
+  }
+
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo .logo-title {
+    font-size: 16px;
+  }
+
+  .app-body {
+    position: relative;
+  }
+
+  .upload-section {
+    padding: 20px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header {
+    height: 50px;
+    padding: 0 10px;
+  }
+
+  .logo .logo-title {
+    font-size: 14px;
+  }
+
+  .upload-section {
+    padding: 16px;
+  }
+}

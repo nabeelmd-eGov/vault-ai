@@ -30,9 +30,15 @@ const formatDate = (dateStr) => {
   return date.toLocaleDateString() + " " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
-export default function Sidebar({ documents, selectedId, onSelect, onDelete }) {
+export default function Sidebar({ documents, selectedId, onSelect, onDelete, isOpen, onClose }) {
   return (
-    <aside className="sidebar" role="complementary" aria-label="Document list">
+    <>
+      <div
+        className={`sidebar-overlay ${isOpen ? "open" : ""}`}
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <aside className={`sidebar ${isOpen ? "open" : ""}`} role="complementary" aria-label="Document list">
       <div className="sidebar-header">
         <h2 id="sidebar-heading">Documents</h2>
         <span className="doc-count" aria-label={`${documents.length} documents`}>{documents.length}</span>
@@ -103,5 +109,6 @@ export default function Sidebar({ documents, selectedId, onSelect, onDelete }) {
         )}
       </nav>
     </aside>
+    </>
   );
 }
