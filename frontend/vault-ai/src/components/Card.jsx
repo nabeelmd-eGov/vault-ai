@@ -14,6 +14,7 @@ export function CardContent({ children, className = '' }) {
   return <div className={`card-content ${className}`}>{children}</div>;
 }
 
-export function CardTitle({ children, as: Component = 'h3', className = '' }) {
-  return <Component className={`card-title ${className}`}>{children}</Component>;
+export function CardTitle({ children, as = 'h3', className = '' }) {
+  const Element = as;
+  return <Element className={`card-title ${className}`}>{children}</Element>;
 }
