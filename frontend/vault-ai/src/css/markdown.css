@@ -1,0 +1,128 @@
+.markdown {
+  line-height: 1.6;
+  color: inherit;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdown h1:first-child,
+.markdown h2:first-child,
+.markdown h3:first-child {
+  margin-top: 0;
+}
+
+.markdown h1 {
+  font-size: 1.75em;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  padding-bottom: 0.3em;
+}
+
+.markdown h2 {
+  font-size: 1.5em;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  padding-bottom: 0.3em;
+}
+
+.markdown h3 {
+  font-size: 1.25em;
+}
+
+.markdown h4 {
+  font-size: 1em;
+}
+
+.markdown h5 {
+  font-size: 0.875em;
+}
+
+.markdown h6 {
+  font-size: 0.85em;
+  color: var(--text-secondary, #6b7280);
+}
+
+.markdown p {
+  margin: 0.75em 0;
+}
+
+.markdown p:first-child {
+  margin-top: 0;
+}
+
+.markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.markdown a {
+  color: var(--primary-color, #3b82f6);
+  text-decoration: none;
+}
+
+.markdown a:hover {
+  text-decoration: underline;
+}
+
+.markdown strong {
+  font-weight: 600;
+}
+
+.markdown em {
+  font-style: italic;
+}
+
+.markdown code {
+  background: var(--code-bg, #f3f4f6);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+  font-size: 0.9em;
+}
+
+.markdown pre {
+  background: var(--code-bg, #1e1e1e);
+  color: var(--code-text, #e5e7eb);
+  padding: 1em;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.markdown pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875em;
+  color: inherit;
+}
+
+.markdown blockquote {
+  border-left: 4px solid var(--primary-color, #3b82f6);
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  background: var(--blockquote-bg, #f9fafb);
+  color: var(--text-secondary, #6b7280);
+}
+
+.markdown ul,
+.markdown ol {
+  margin: 0.75em 0;
+  padding-left: 2em;
+}
+
+.markdown li {
+  margin: 0.25em 0;
+}
+
+.markdown hr {
+  border: none;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  margin: 1.5em 0;
+}

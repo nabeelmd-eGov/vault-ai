@@ -1,0 +1,186 @@
+.viewer-empty,
+.viewer-loading,
+.viewer-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  text-align: center;
+  padding: 40px;
+}
+
+.viewer-empty h3,
+.viewer-loading h3,
+.viewer-error h3 {
+  margin: 16px 0 8px;
+  color: #a0a0a0;
+}
+
+.viewer-empty p,
+.viewer-loading p,
+.viewer-error p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.viewer-loading .spinner {
+  color: #6366f1;
+}
+
+.viewer-error {
+  color: #ef4444;
+}
+
+.viewer-error h3 {
+  color: #ef4444;
+}
+
+.document-viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.viewer-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #2d2d44;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.doc-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #6366f1;
+}
+
+.doc-title h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #e0e0e0;
+}
+
+.viewer-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.summary-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.summary-card .card-content .summary-text {
+  color: #e0e0e0;
+  line-height: 1.7;
+  font-size: 15px;
+  margin: 0;
+}
+
+.meta-card .meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.meta-value {
+  font-size: 14px;
+  color: #e0e0e0;
+  word-break: break-word;
+}
+
+.markdown-view {
+  background: #1a1a2e;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.markdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #2d2d44;
+  font-size: 13px;
+  color: #a0a0a0;
+}
+
+.markdown-content {
+  padding: 20px;
+  color: #e0e0e0;
+  line-height: 1.7;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  color: #fff;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.markdown-content h1:first-child,
+.markdown-content h2:first-child,
+.markdown-content h3:first-child {
+  margin-top: 0;
+}
+
+.markdown-content p {
+  margin-bottom: 16px;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.markdown-content li {
+  margin-bottom: 8px;
+}
+
+.markdown-content code {
+  background: #2d2d44;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.markdown-content pre {
+  background: #2d2d44;
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.markdown-content pre code {
+  background: none;
+  padding: 0;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #6366f1;
+  padding-left: 16px;
+  margin: 16px 0;
+  color: #a0a0a0;
+}

@@ -1,0 +1,20 @@
+.spinner {
+  animation: spinner-spin 1s linear infinite;
+}
+
+.spinner-track {
+  opacity: 0.2;
+}
+
+.spinner-indicator {
+  opacity: 1;
+}
+
+@keyframes spinner-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
