@@ -50,18 +50,10 @@ export default function DocumentViewer({ document }) {
           <h2>{document.originalName}</h2>
         </div>
         <TabList>
-          <Tab
-            active={activeTab === "summary"}
-            onClick={() => setActiveTab("summary")}
-            id="tab-summary"
-            panelId="panel-summary">
+          <Tab active={activeTab === "summary"} onClick={() => setActiveTab("summary")} id="tab-summary" panelId="panel-summary">
             Summary
           </Tab>
-          <Tab
-            active={activeTab === "markdown"}
-            onClick={() => setActiveTab("markdown")}
-            id="tab-markdown"
-            panelId="panel-markdown">
+          <Tab active={activeTab === "markdown"} onClick={() => setActiveTab("markdown")} id="tab-markdown" panelId="panel-markdown">
             Markdown
           </Tab>
         </TabList>
@@ -87,7 +79,7 @@ export default function DocumentViewer({ document }) {
 
             <Card className="meta-card">
               <CardHeader>
-                <CardTitle as="h4">Document Info</CardTitle>
+                <CardTitle>Document Info</CardTitle>
               </CardHeader>
               <CardContent>
                 <dl className="meta-grid">
