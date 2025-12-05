@@ -1,10 +1,9 @@
 import { useState, useRef } from "react";
-import { Icon, Spinner, Button } from "../components";
+import { Icon, Button } from "../components";
 
 export default function UploadZone({ onUpload }) {
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState([]);
-  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleDragOver = (e) => {
@@ -49,20 +48,9 @@ export default function UploadZone({ onUpload }) {
 
   const uploadFiles = async () => {
     if (files.length === 0) return;
-    setUploading(true);
-
-    for (let i = 0; i < files.length; i++) {
-      try {
-        await onUpload(files[i].file, (progress) => {
-          setFiles((prev) => prev.map((f, idx) => (idx === i ? { ...f, progress } : f)));
-        });
-      } catch (err) {
-        console.error("Upload failed:", err);
-      }
-    }
-
+    // Pass files to parent for folder selection
+    onUpload(files);
     setFiles([]);
-    setUploading(false);
   };
 
   return (
@@ -104,45 +92,22 @@ export default function UploadZone({ onUpload }) {
             <div key={index} className="file-item" role="listitem">
               <Icon name="file" size={16} ariaHidden={true} />
               <span className="file-name">{item.file.name}</span>
-              {item.progress > 0 && item.progress < 100 && (
-                <div
-                  className="progress-bar"
-                  role="progressbar"
-                  aria-valuenow={item.progress}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-label={`Upload progress for ${item.file.name}`}>
-                  <div className="progress" style={{ width: `${item.progress}%` }} />
-                </div>
-              )}
-              {!uploading && (
-                <Button
-                  variant="icon"
-                  className="remove-btn"
-                  onClick={() => removeFile(index)}
-                  ariaLabel={`Remove ${item.file.name}`}>
-                  <Icon name="x" size={14} ariaHidden={true} />
-                </Button>
-              )}
+              <Button
+                variant="icon"
+                className="remove-btn"
+                onClick={() => removeFile(index)}
+                ariaLabel={`Remove ${item.file.name}`}>
+                <Icon name="x" size={14} ariaHidden={true} />
+              </Button>
             </div>
           ))}
           <Button
             variant="primary"
             className="upload-btn"
             onClick={uploadFiles}
-            disabled={uploading}
-            ariaLabel={uploading ? "Uploading files" : `Upload ${files.length} file${files.length > 1 ? "s" : ""}`}>
-            {uploading ? (
-              <>
-                <Spinner size={16} label="Uploading" />
-                <span aria-live="polite">Uploading...</span>
-              </>
-            ) : (
-              <>
-                <Icon name="upload" size={16} ariaHidden={true} />
-                Upload {files.length} file{files.length > 1 ? "s" : ""}
-              </>
-            )}
+            ariaLabel={`Upload ${files.length} file${files.length > 1 ? "s" : ""}`}>
+            <Icon name="upload" size={16} ariaHidden={true} />
+            Upload {files.length} file{files.length > 1 ? "s" : ""}
           </Button>
         </div>
       )}

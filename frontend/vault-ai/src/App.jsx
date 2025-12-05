@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { Header } from "./components";
+import { VaultProvider } from "./context/VaultContext";
 import HomePage from "./pages/HomePage";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
   const closeSidebar = () => setIsSidebarOpen(false);
 
   return (
-    <div className="app">
-      <Header onMenuToggle={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-      <HomePage isSidebarOpen={isSidebarOpen} onCloseSidebar={closeSidebar} />
-    </div>
+    <VaultProvider>
+      <div className="app">
+        <Header onMenuToggle={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+        <HomePage isSidebarOpen={isSidebarOpen} onCloseSidebar={closeSidebar} />
+      </div>
+    </VaultProvider>
   );
 }
 

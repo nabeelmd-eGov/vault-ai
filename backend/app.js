@@ -69,6 +69,15 @@ app.post("/api/documents/upload", upload.single("file"), async (req, res) => {
     return res.status(400).json({ error: "No file provided" });
   }
 
+  // Validate folderId if provided
+  const folderId = req.body.folderId || null;
+  if (folderId) {
+    const folder = documentStore.getFolderById(folderId);
+    if (!folder) {
+      return res.status(400).json({ error: "Folder not found" });
+    }
+  }
+
   const document = {
     id: crypto.randomBytes(16).toString("hex"),
     originalName: req.file.originalname,
@@ -80,6 +89,7 @@ app.post("/api/documents/upload", upload.single("file"), async (req, res) => {
     status: "processing",
     summary: null,
     markdown: null,
+    folderId: folderId,
   };
 
   // Save document immediately (status: processing)
@@ -134,6 +144,26 @@ app.get("/api/documents/:id", (req, res) => {
   res.json(document);
 });
 
+// Serve document file (for PDF viewing, etc.)
+app.get("/api/documents/:id/file", (req, res) => {
+  const document = documentStore.getDocumentById(req.params.id);
+  if (!document) {
+    return res.status(404).json({ error: "Document not found" });
+  }
+
+  if (!fs.existsSync(document.path)) {
+    return res.status(404).json({ error: "File not found on disk" });
+  }
+
+  // Set appropriate headers for inline viewing
+  res.setHeader("Content-Type", document.mimetype);
+  res.setHeader("Content-Disposition", `inline; filename="${document.originalName}"`);
+
+  // Stream the file
+  const fileStream = fs.createReadStream(document.path);
+  fileStream.pipe(res);
+});
+
 // Delete document
 app.delete("/api/documents/:id", (req, res) => {
   const document = documentStore.getDocumentById(req.params.id);
@@ -149,6 +179,108 @@ app.delete("/api/documents/:id", (req, res) => {
   // Delete from storage
   documentStore.deleteDocument(req.params.id);
   res.json({ message: "Document deleted" });
+});
+
+// ==================== FOLDER ENDPOINTS ====================
+
+// Create a new folder
+app.post("/api/folders", (req, res) => {
+  const { name, parentId } = req.body;
+
+  if (!name || !name.trim()) {
+    return res.status(400).json({ error: "Folder name is required" });
+  }
+
+  // Validate parent folder exists if specified
+  if (parentId) {
+    const parentFolder = documentStore.getFolderById(parentId);
+    if (!parentFolder) {
+      return res.status(400).json({ error: "Parent folder not found" });
+    }
+  }
+
+  const folder = {
+    id: crypto.randomBytes(16).toString("hex"),
+    name: name.trim(),
+    parentId: parentId || null,
+    createdAt: new Date().toISOString(),
+  };
+
+  documentStore.saveFolder(folder);
+  res.status(201).json(folder);
+});
+
+// Get all folders
+app.get("/api/folders", (req, res) => {
+  const folders = documentStore.getAllFolders();
+  res.json(folders);
+});
+
+// Get single folder by ID
+app.get("/api/folders/:id", (req, res) => {
+  const folder = documentStore.getFolderById(req.params.id);
+  if (!folder) {
+    return res.status(404).json({ error: "Folder not found" });
+  }
+  res.json(folder);
+});
+
+// Update folder
+app.patch("/api/folders/:id", (req, res) => {
+  const folder = documentStore.getFolderById(req.params.id);
+  if (!folder) {
+    return res.status(404).json({ error: "Folder not found" });
+  }
+
+  const { name, parentId } = req.body;
+  const updates = {};
+
+  if (name) {
+    updates.name = name.trim();
+  }
+
+  if (parentId !== undefined) {
+    // Prevent setting self as parent
+    if (parentId === req.params.id) {
+      return res.status(400).json({ error: "Folder cannot be its own parent" });
+    }
+    // Validate parent folder exists if specified
+    if (parentId) {
+      const parentFolder = documentStore.getFolderById(parentId);
+      if (!parentFolder) {
+        return res.status(400).json({ error: "Parent folder not found" });
+      }
+    }
+    updates.parentId = parentId;
+  }
+
+  const updatedFolder = documentStore.updateFolder(req.params.id, updates);
+  res.json(updatedFolder);
+});
+
+// Delete folder
+app.delete("/api/folders/:id", (req, res) => {
+  const folder = documentStore.getFolderById(req.params.id);
+  if (!folder) {
+    return res.status(404).json({ error: "Folder not found" });
+  }
+
+  // Check if folder has child folders
+  const allFolders = documentStore.getAllFolders();
+  const hasChildren = allFolders.some((f) => f.parentId === req.params.id);
+  if (hasChildren) {
+    return res.status(400).json({ error: "Cannot delete folder with subfolders. Delete subfolders first." });
+  }
+
+  // Check if folder has documents
+  const allDocuments = documentStore.getAllDocuments();
+  const hasDocuments = allDocuments.some((d) => d.folderId === req.params.id);
+  if (hasDocuments) {
+    return res.status(400).json({ error: "Cannot delete folder with documents. Move or delete documents first." });
+  }
+
+  documentStore.deleteFolder(req.params.id);
+  res.json({ message: "Folder deleted" });
 });
 
 // Error handling middleware

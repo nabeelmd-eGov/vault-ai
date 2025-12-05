@@ -33,6 +33,9 @@
 .sidebar-actions {
   padding: 12px 16px;
   border-bottom: 1px solid #2d2d44;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .upload-new-btn {
@@ -51,6 +54,26 @@
 
 .upload-new-btn:hover {
   background: #5558e3;
+}
+
+.new-folder-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #4a4a6a;
+  color: #e0e0e0;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.new-folder-btn:hover {
+  background: #2d2d44;
+  border-color: #6366f1;
 }
 
 .doc-list {
@@ -155,6 +178,96 @@
 .delete-btn:hover {
   color: #ef4444;
   background: rgba(239, 68, 68, 0.1);
+}
+
+/* Folder Tree Styles */
+.folder-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.folder-tree-item {
+  list-style: none;
+}
+
+.folder-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.folder-row:hover {
+  background: #2d2d44;
+}
+
+.folder-row.selected {
+  background: #3d3d5c;
+}
+
+.folder-row .expand-btn {
+  padding: 2px;
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.folder-row .expand-btn:hover {
+  color: #fff;
+}
+
+.folder-icon {
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.folder-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: #e0e0e0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.folder-row .delete-btn {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.folder-row:hover .delete-btn {
+  opacity: 1;
+}
+
+.folder-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tree-doc-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tree-doc-item:hover {
+  background: #2d2d44;
+}
+
+.tree-doc-item.selected {
+  background: #3d3d5c;
 }
 
 /* Mobile responsive styles */

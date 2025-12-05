@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000/api";
+import { API_BASE } from "../config";
 
 const handleResponse = async (response) => {
   if (!response.ok) {
@@ -13,9 +13,12 @@ export const documentsApi = {
 
   getById: (id) => fetch(`${API_BASE}/documents/${id}`).then(handleResponse),
 
-  upload: async (file, onProgress) => {
+  upload: async (file, onProgress, folderId = null) => {
     const formData = new FormData();
     formData.append("file", file);
+    if (folderId) {
+      formData.append("folderId", folderId);
+    }
 
     // Note: fetch doesn't support upload progress natively
     // For progress, you'd need XMLHttpRequest
@@ -32,4 +35,27 @@ export const documentsApi = {
 
   delete: (id) =>
     fetch(`${API_BASE}/documents/${id}`, { method: "DELETE" }).then(handleResponse),
+};
+
+export const foldersApi = {
+  getAll: () => fetch(`${API_BASE}/folders`).then(handleResponse),
+
+  getById: (id) => fetch(`${API_BASE}/folders/${id}`).then(handleResponse),
+
+  create: (name, parentId = null) =>
+    fetch(`${API_BASE}/folders`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, parentId }),
+    }).then(handleResponse),
+
+  update: (id, updates) =>
+    fetch(`${API_BASE}/folders/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates),
+    }).then(handleResponse),
+
+  delete: (id) =>
+    fetch(`${API_BASE}/folders/${id}`, { method: "DELETE" }).then(handleResponse),
 };

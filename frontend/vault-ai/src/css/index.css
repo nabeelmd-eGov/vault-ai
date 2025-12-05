@@ -5,6 +5,7 @@
 @import "./card.css";
 @import "./spinner.css";
 @import "./markdown.css";
+@import "./dialog.css";
 
 /* Page Components */
 @import "./document-viewer.css";
