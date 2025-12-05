@@ -3,6 +3,7 @@ export { default as Button } from "./Button";
 export { default as Spinner } from "./Spinner";
 export { default as StatusIcon } from "./StatusIcon";
 export { default as Header } from "./Header";
+export { default as ToastContainer } from "./Toast";
 export { default as Sidebar } from "../hoc/Sidebar";
 export { default as UploadZone } from "../hoc/UploadZone";
 export { default as DocumentViewer } from "../hoc/DocumentViewer";

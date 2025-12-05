@@ -6,6 +6,7 @@
 @import "./spinner.css";
 @import "./markdown.css";
 @import "./dialog.css";
+@import "./toast.css";
 
 /* Page Components */
 @import "./document-viewer.css";

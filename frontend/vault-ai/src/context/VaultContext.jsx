@@ -1,10 +1,13 @@
 import { createContext, useContext, useState, useCallback, useEffect, useRef } from "react";
 import { useDocuments } from "../hooks/useDocuments";
 import { useFolders } from "../hooks/useFolders";
+import { useToast } from "./ToastContext";
 
 const VaultContext = createContext(null);
 
 export function VaultProvider({ children }) {
+  const toast = useToast();
+
   const {
     documents,
     loading: docsLoading,
@@ -22,20 +25,14 @@ export function VaultProvider({ children }) {
     deleteFolder
   } = useFolders();
 
-  // Selection state
   const [selectedDocId, setSelectedDocId] = useState(null);
   const [selectedFolderId, setSelectedFolderId] = useState(null);
   const [selectedDoc, setSelectedDoc] = useState(null);
-
-  // Dialog state
   const [showNewFolderDialog, setShowNewFolderDialog] = useState(false);
   const [showFolderSelectDialog, setShowFolderSelectDialog] = useState(false);
   const [pendingFiles, setPendingFiles] = useState([]);
-
-  // Polling ref for selected document
   const docPollingRef = useRef(null);
 
-  // Fetch selected document details
   useEffect(() => {
     if (!selectedDocId) {
       setSelectedDoc(null);
@@ -53,7 +50,6 @@ export function VaultProvider({ children }) {
 
     fetchSelectedDoc();
 
-    // Poll if document is processing
     const doc = documents.find((d) => d.id === selectedDocId);
     if (doc?.status === "processing") {
       docPollingRef.current = setInterval(fetchSelectedDoc, 2000);
@@ -67,7 +63,6 @@ export function VaultProvider({ children }) {
     };
   }, [selectedDocId, documents, getDocumentById]);
 
-  // Selection handlers
   const selectDocument = useCallback((id) => {
     setSelectedDocId(id);
     setSelectedFolderId(null);
@@ -85,7 +80,6 @@ export function VaultProvider({ children }) {
     setSelectedDoc(null);
   }, []);
 
-  // Document operations
   const handleDeleteDocument = useCallback(async (id) => {
     if (!window.confirm("Are you sure you want to delete this document?")) return false;
 
@@ -100,7 +94,6 @@ export function VaultProvider({ children }) {
     }
   }, [deleteDocument, selectedDocId, clearSelection]);
 
-  // Folder operations
   const handleDeleteFolder = useCallback(async (id) => {
     if (!window.confirm("Are you sure you want to delete this folder?")) return false;
 
@@ -109,28 +102,28 @@ export function VaultProvider({ children }) {
       if (selectedFolderId === id) {
         setSelectedFolderId(null);
       }
+      toast.success("Folder deleted successfully");
       return true;
     } catch (err) {
-      alert(err.message || "Failed to delete folder");
+      toast.error(err.message || "Failed to delete folder");
       return false;
     }
-  }, [deleteFolder, selectedFolderId]);
+  }, [deleteFolder, selectedFolderId, toast]);
 
   const handleCreateFolder = useCallback(async (name, parentId) => {
     try {
       await createFolder(name, parentId);
       setShowNewFolderDialog(false);
+      toast.success("Folder created successfully");
       return true;
     } catch (err) {
-      alert(err.message || "Failed to create folder");
+      toast.error(err.message || "Failed to create folder");
       return false;
     }
-  }, [createFolder]);
+  }, [createFolder, toast]);
 
-  // Upload flow
   const initiateUpload = useCallback((files) => {
     if (folders.length === 0) {
-      // No folders, upload directly to root
       Promise.all(files.map((f) => uploadDocument(f.file, null)))
         .then((results) => {
           if (results.length > 0) {
@@ -163,36 +156,23 @@ export function VaultProvider({ children }) {
   }, []);
 
   const value = {
-    // Data
     documents,
     folders,
     selectedDoc,
     selectedDocId,
     selectedFolderId,
-
-    // Loading/Error states
     loading: docsLoading || foldersLoading,
     error: docsError || foldersError,
-
-    // Selection
     selectDocument,
     selectFolder,
     clearSelection,
-
-    // Document operations
     deleteDocument: handleDeleteDocument,
-
-    // Folder operations
     createFolder: handleCreateFolder,
     deleteFolder: handleDeleteFolder,
-
-    // Upload flow
     initiateUpload,
     handleFolderSelectedForUpload,
     cancelUpload,
     pendingFiles,
-
-    // Dialog state
     showNewFolderDialog,
     setShowNewFolderDialog,
     showFolderSelectDialog

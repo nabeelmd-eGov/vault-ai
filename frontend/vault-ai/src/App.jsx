@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Header } from "./components";
+import { Header, ToastContainer } from "./components";
 import { VaultProvider } from "./context/VaultContext";
+import { ToastProvider } from "./context/ToastContext";
 import HomePage from "./pages/HomePage";
 
 function App() {
@@ -10,12 +11,15 @@ function App() {
   const closeSidebar = () => setIsSidebarOpen(false);
 
   return (
-    <VaultProvider>
-      <div className="app">
-        <Header onMenuToggle={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-        <HomePage isSidebarOpen={isSidebarOpen} onCloseSidebar={closeSidebar} />
-      </div>
-    </VaultProvider>
+    <ToastProvider>
+      <VaultProvider>
+        <div className="app">
+          <Header onMenuToggle={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+          <HomePage isSidebarOpen={isSidebarOpen} onCloseSidebar={closeSidebar} />
+        </div>
+        <ToastContainer />
+      </VaultProvider>
+    </ToastProvider>
   );
 }
 

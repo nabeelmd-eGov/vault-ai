@@ -2,8 +2,8 @@ import { API_BASE } from "../config";
 
 const handleResponse = async (response) => {
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || `HTTP error ${response.status}`);
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.error || data.message || `HTTP error ${response.status}`);
   }
   return response.json();
 };
