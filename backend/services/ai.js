@@ -1,8 +1,8 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+// const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
+// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+const OPENROUTER_API_KEY = process.env.OPEN_ROUTER_API_KEY;
 /**
  * Generate summary and markdown from document text
  * @param {string} text - The extracted text content
@@ -29,8 +29,19 @@ Respond in this exact JSON format (no markdown code blocks, just raw JSON):
 }`;
 
   try {
-    const result = await model.generateContent(prompt);
-    const response = result.response.text();
+    const result = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "deepseek/deepseek-chat",
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
+    const data = await result.json();
+    const response = data.choices?.[0]?.message?.content || "";
 
     // Parse JSON response
     const jsonMatch = response.match(/\{[\s\S]*\}/);

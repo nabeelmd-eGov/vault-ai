@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Icon, Button, StatusIcon } from "../components";
 import { formatFileSize, formatDate } from "../utils/formatters";
+import { useVault } from "../context/VaultContext";
 
 function FolderItem({
   folder,
@@ -12,7 +13,8 @@ function FolderItem({
   onSelectFolder,
   onDeleteDocument,
   onDeleteFolder,
-  level = 0
+  // setShowNewFolderDialog,
+  level = 0,
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -41,24 +43,17 @@ function FolderItem({
         onKeyDown={handleKeyDown}
         role="treeitem"
         aria-expanded={isExpanded}
-        tabIndex={0}
-      >
+        tabIndex={0}>
         <Button
           variant="icon"
           className="expand-btn"
           onClick={handleToggle}
           ariaLabel={isExpanded ? "Collapse folder" : "Expand folder"}
-          style={{ visibility: hasChildren ? "visible" : "hidden" }}
-        >
+          style={{ visibility: hasChildren ? "visible" : "hidden" }}>
           <Icon name={isExpanded ? "chevronDown" : "chevronRight"} size={14} ariaHidden />
         </Button>
 
-        <Icon
-          name={isExpanded ? "folderOpen" : "folder"}
-          size={18}
-          className="folder-icon"
-          ariaHidden
-        />
+        <Icon name={isExpanded ? "folderOpen" : "folder"} size={18} className="folder-icon" ariaHidden />
 
         <span className="folder-name">{folder.name}</span>
 
@@ -69,8 +64,7 @@ function FolderItem({
             e.stopPropagation();
             onDeleteFolder(folder.id);
           }}
-          ariaLabel={`Delete folder ${folder.name}`}
-        >
+          ariaLabel={`Delete folder ${folder.name}`}>
           <Icon name="trash" size={14} ariaHidden />
         </Button>
       </div>
@@ -109,6 +103,7 @@ function FolderItem({
 }
 
 function DocumentItem({ doc, isSelected, onSelect, onDelete, level = 0 }) {
+  const { setShowFolderSelectDialog } = useVault();
   const handleKeyDown = (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -116,6 +111,7 @@ function DocumentItem({ doc, isSelected, onSelect, onDelete, level = 0 }) {
     }
   };
 
+  // console.log("showNewFolderDialog", showNewFolderDialog);
   return (
     <li
       className={`doc-item tree-doc-item ${isSelected ? "selected" : ""}`}
@@ -124,8 +120,7 @@ function DocumentItem({ doc, isSelected, onSelect, onDelete, level = 0 }) {
       onKeyDown={handleKeyDown}
       role="treeitem"
       aria-selected={isSelected}
-      tabIndex={0}
-    >
+      tabIndex={0}>
       <div className="doc-icon">
         <Icon name="fileText" size={18} ariaHidden />
       </div>
@@ -147,10 +142,22 @@ function DocumentItem({ doc, isSelected, onSelect, onDelete, level = 0 }) {
           className="delete-btn"
           onClick={(e) => {
             e.stopPropagation();
+            setShowFolderSelectDialog(doc);
+            // showFolderSelectDialog,
+            // onDelete(doc.id);
+          }}
+          // ariaLabel={`Delete ${doc.originalName}`}
+        >
+          Move
+        </Button>
+        <Button
+          variant="icon"
+          className="delete-btn"
+          onClick={(e) => {
+            e.stopPropagation();
             onDelete(doc.id);
           }}
-          ariaLabel={`Delete ${doc.originalName}`}
-        >
+          ariaLabel={`Delete ${doc.originalName}`}>
           <Icon name="trash" size={14} ariaHidden />
         </Button>
       </div>
@@ -166,7 +173,7 @@ export default function FolderTree({
   onSelectDocument,
   onSelectFolder,
   onDeleteDocument,
-  onDeleteFolder
+  onDeleteFolder,
 }) {
   const rootFolders = folders.filter((f) => !f.parentId);
   const rootDocuments = documents.filter((d) => !d.folderId);
@@ -198,13 +205,7 @@ export default function FolderTree({
         />
       ))}
       {rootDocuments.map((doc) => (
-        <DocumentItem
-          key={doc.id}
-          doc={doc}
-          isSelected={selectedId === doc.id}
-          onSelect={onSelectDocument}
-          onDelete={onDeleteDocument}
-        />
+        <DocumentItem key={doc.id} doc={doc} isSelected={selectedId === doc.id} onSelect={onSelectDocument} onDelete={onDeleteDocument} />
       ))}
     </ul>
   );

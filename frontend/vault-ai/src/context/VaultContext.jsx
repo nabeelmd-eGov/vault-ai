@@ -8,22 +8,9 @@ const VaultContext = createContext(null);
 export function VaultProvider({ children }) {
   const toast = useToast();
 
-  const {
-    documents,
-    loading: docsLoading,
-    error: docsError,
-    uploadDocument,
-    deleteDocument,
-    getDocumentById
-  } = useDocuments();
+  const { documents, loading: docsLoading, error: docsError, uploadDocument, deleteDocument, getDocumentById } = useDocuments();
 
-  const {
-    folders,
-    loading: foldersLoading,
-    error: foldersError,
-    createFolder,
-    deleteFolder
-  } = useFolders();
+  const { folders, loading: foldersLoading, error: foldersError, createFolder, deleteFolder } = useFolders();
 
   const [selectedDocId, setSelectedDocId] = useState(null);
   const [selectedFolderId, setSelectedFolderId] = useState(null);
@@ -80,75 +67,89 @@ export function VaultProvider({ children }) {
     setSelectedDoc(null);
   }, []);
 
-  const handleDeleteDocument = useCallback(async (id) => {
-    if (!window.confirm("Are you sure you want to delete this document?")) return false;
+  const handleDeleteDocument = useCallback(
+    async (id) => {
+      if (!window.confirm("Are you sure you want to delete this document?")) return false;
 
-    try {
-      await deleteDocument(id);
-      if (selectedDocId === id) {
-        clearSelection();
+      try {
+        await deleteDocument(id);
+        if (selectedDocId === id) {
+          clearSelection();
+        }
+        return true;
+      } catch {
+        return false;
       }
-      return true;
-    } catch {
-      return false;
-    }
-  }, [deleteDocument, selectedDocId, clearSelection]);
+    },
+    [deleteDocument, selectedDocId, clearSelection]
+  );
 
-  const handleDeleteFolder = useCallback(async (id) => {
-    if (!window.confirm("Are you sure you want to delete this folder?")) return false;
+  const handleDeleteFolder = useCallback(
+    async (id) => {
+      if (!window.confirm("Are you sure you want to delete this folder?")) return false;
 
-    try {
-      await deleteFolder(id);
-      if (selectedFolderId === id) {
-        setSelectedFolderId(null);
+      try {
+        await deleteFolder(id);
+        if (selectedFolderId === id) {
+          setSelectedFolderId(null);
+        }
+        toast.success("Folder deleted successfully");
+        return true;
+      } catch (err) {
+        toast.error(err.message || "Failed to delete folder");
+        return false;
       }
-      toast.success("Folder deleted successfully");
-      return true;
-    } catch (err) {
-      toast.error(err.message || "Failed to delete folder");
-      return false;
-    }
-  }, [deleteFolder, selectedFolderId, toast]);
+    },
+    [deleteFolder, selectedFolderId, toast]
+  );
 
-  const handleCreateFolder = useCallback(async (name, parentId) => {
-    try {
-      await createFolder(name, parentId);
-      setShowNewFolderDialog(false);
-      toast.success("Folder created successfully");
-      return true;
-    } catch (err) {
-      toast.error(err.message || "Failed to create folder");
-      return false;
-    }
-  }, [createFolder, toast]);
+  const handleCreateFolder = useCallback(
+    async (name, parentId) => {
+      try {
+        await createFolder(name, parentId);
+        setShowNewFolderDialog(false);
+        toast.success("Folder created successfully");
+        return true;
+      } catch (err) {
+        toast.error(err.message || "Failed to create folder");
+        return false;
+      }
+    },
+    [createFolder, toast]
+  );
 
-  const initiateUpload = useCallback((files) => {
-    if (folders.length === 0) {
-      Promise.all(files.map((f) => uploadDocument(f.file, null)))
-        .then((results) => {
+  const initiateUpload = useCallback(
+    (files) => {
+      if (folders.length === 0) {
+        Promise.all(files.map((f) => uploadDocument(f.file, null))).then((results) => {
           if (results.length > 0) {
             selectDocument(results[0].id);
           }
         });
-    } else {
-      setPendingFiles(files);
-      setShowFolderSelectDialog(true);
-    }
-  }, [folders, uploadDocument, selectDocument]);
+      } else {
+        setPendingFiles(files);
+        setShowFolderSelectDialog(true);
+      }
+    },
+    [folders, uploadDocument, selectDocument]
+  );
 
-  const handleFolderSelectedForUpload = useCallback(async (folderId) => {
-    const results = [];
-    for (const fileItem of pendingFiles) {
-      const doc = await uploadDocument(fileItem.file, folderId);
-      results.push(doc);
-    }
-    setPendingFiles([]);
-    setShowFolderSelectDialog(false);
+  const handleFolderSelectedForUpload = useCallback(
+    async (folderId) => {
+      const results = [];
+      for (const fileItem of pendingFiles) {
+        const doc = await uploadDocument(fileItem.file, folderId);
+        results.push(doc);
+      }
+      setPendingFiles([]);
+      setShowFolderSelectDialog(false);
 
-    if (results.length > 0) {
-      selectDocument(results[0].id);
-    }
-  }, [pendingFiles, uploadDocument, selectDocument]);
+      if (results.length > 0) {
+        selectDocument(results[0].id);
+      }
+    },
+    [pendingFiles, uploadDocument, selectDocument]
+  );
 
   const cancelUpload = useCallback(() => {
     setPendingFiles([]);
@@ -175,14 +176,11 @@ export function VaultProvider({ children }) {
     pendingFiles,
     showNewFolderDialog,
     setShowNewFolderDialog,
-    showFolderSelectDialog
+    showFolderSelectDialog,
+    setShowFolderSelectDialog,
   };
 
-  return (
-    <VaultContext.Provider value={value}>
-      {children}
-    </VaultContext.Provider>
-  );
+  return <VaultContext.Provider value={value}>{children}</VaultContext.Provider>;
 }
 
 export function useVault() {

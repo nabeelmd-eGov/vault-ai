@@ -21,7 +21,7 @@ export default function HomePage({ isSidebarOpen, onCloseSidebar }) {
     showNewFolderDialog,
     setShowNewFolderDialog,
     showFolderSelectDialog,
-    clearSelection
+    clearSelection,
   } = useVault();
 
   const handleSelectDocument = (id) => {
@@ -81,12 +81,13 @@ export default function HomePage({ isSidebarOpen, onCloseSidebar }) {
         parentFolderId={selectedFolderId}
       />
 
+      {/* {console.log(pendingFiles)} */}
       <FolderSelectDialog
         isOpen={showFolderSelectDialog}
         onClose={cancelUpload}
         onSubmit={handleFolderSelectedForUpload}
         folders={folders}
-        files={pendingFiles}
+        files={ pendingFiles}
       />
     </div>
   );
